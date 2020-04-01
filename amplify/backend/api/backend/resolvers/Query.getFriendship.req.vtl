@@ -1,0 +1,15 @@
+#set($statement1 = "
+  SELECT
+    ""id"",
+    ""initiatorUserId"",
+    ""otherUserId""
+  FROM friendships
+  WHERE id = '$context.arguments.id'
+")
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1)
+  ]
+}

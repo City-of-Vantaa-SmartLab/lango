@@ -1,0 +1,12 @@
+#set($statement1 = "
+  SELECT ""cognitoId""
+  FROM cognito_id_to_user_id_map
+  WHERE ""userId"" = '$context.source.id'
+")
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1)
+  ]
+}

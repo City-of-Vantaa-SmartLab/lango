@@ -1,0 +1,157 @@
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+type CognitoIdToUserIdMapping {
+  cognitoId: String!
+  userId: ID!
+}
+
+type Friendship {
+  id: ID!
+  initiatorUserId: ID!
+  otherUserId: ID!
+  initiatorUserLastSeen: String!
+  otherUserLastSeen: String!
+  friend: User!
+  status: FriendshipStatus!
+  messages: [Message]
+}
+
+type Language {
+  code: ID!
+  nameInFinnish: String!
+  nameInEnglish: String!
+}
+
+type Message {
+  content: String!
+  friendshipId: ID!
+  id: ID!
+  receiverUserId: ID!
+  senderUserId: ID!
+  sentDate: String!
+}
+
+type Mutation {
+  acceptRequestedFriendship(
+    id: ID!
+  ): Friendship
+
+  cancelRequestedFriendship(
+    id: ID!
+  ): Friendship
+
+  createCognitoIdToUserIdMapping(
+    cognitoId: String!,
+  ): CognitoIdToUserIdMapping
+
+  deleteUser(
+    id: ID!
+  ): Int
+
+  putUser(
+    description: String,
+    email: AWSEmail,
+    firstName: String,
+    gender: String,
+    id: ID!,
+    isAdmin: Boolean,
+    isHidden: Boolean,
+    location: String,
+  ): Int
+
+  putUserLanguages(
+    learning: [String!],
+    spoken: [String!]
+  ): Int
+
+  putUserPreferences(
+    gender: [String!]
+  ): Int
+
+  rejectFriendship(
+    id: ID!
+  ): Friendship
+
+  requestFriendship(
+    otherUserId: ID!
+  ): Friendship
+
+  sendMessage(
+    content: String!
+    friendshipId: ID!
+    receiverUserId: ID!
+    senderUserId: ID!
+    sentDate: String!
+  ): Message
+
+  updateUserLastSeenInFriendship(
+    friendshipId: ID!
+  ): Friendship
+
+  updateUserPushToken(
+    pushToken: String
+  ): String
+}
+
+type Query {
+  fetchFriendships: [Friendship]
+
+  getUserIdByCognitoId(
+    cognitoId: String!
+  ): ID
+
+  getFriendship(
+    id: ID!
+  ): Friendship
+
+  getUser(
+    id: ID!
+  ): User
+
+  getUsers: [User]
+
+  getUserRecommendations: [User]
+}
+
+type Subscription {
+  subscribeToNewMessageByUser(
+    receiverUserId: ID!
+  ): Message @aws_subscribe(mutations: ["sendMessage"])
+}
+
+type User {
+  cognitoId: String!
+  description: String
+  email: AWSEmail
+  firstName: String
+  friendships: [Friendship]
+  gender: String
+  id: ID!
+  isAdmin: Boolean
+  isHidden: Boolean
+  learning: [String!]
+  location: String
+  preferences: UserPreferences
+  spoken: [String!]
+}
+
+type UserLanguage {
+  userId: ID!
+  languageCode: String!
+  language: Language!
+  type: String!
+}
+
+type UserPreferences {
+  gender: [String]
+}
+
+enum FriendshipStatus {
+  requested
+  accepted
+  rejected
+}

@@ -1,0 +1,27 @@
+{
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "lango-dev-20191028193416-authRole",
+            "UnauthRoleArn": "arn:aws:iam::876630367030:role/lango-dev-20191028193416-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::876630367030:role/lango-dev-20191028193416-authRole",
+            "Region": "eu-central-1",
+            "DeploymentBucketName": "lango-dev-20191028193416-deployment",
+            "UnauthRoleName": "lango-dev-20191028193416-unauthRole",
+            "StackName": "lango-dev-20191028193416",
+            "StackId": "arn:aws:cloudformation:eu-central-1:876630367030:stack/lango-dev-20191028193416/2a207430-f9a9-11e9-ba02-0a1a4d297742",
+            "AmplifyAppId": "d20ejse77ck56a"
+        }
+    },
+    "prod": {
+        "awscloudformation": {
+            "AuthRoleName": "lango-prod-20200127181649-authRole",
+            "UnauthRoleArn": "arn:aws:iam::876630367030:role/lango-prod-20200127181649-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::876630367030:role/lango-prod-20200127181649-authRole",
+            "Region": "eu-central-1",
+            "DeploymentBucketName": "lango-prod-20200127181649-deployment",
+            "UnauthRoleName": "lango-prod-20200127181649-unauthRole",
+            "StackName": "lango-prod-20200127181649",
+            "StackId": "arn:aws:cloudformation:eu-central-1:876630367030:stack/lango-prod-20200127181649/6c303900-4120-11ea-a391-02310af8dee8"
+        }
+    }
+}

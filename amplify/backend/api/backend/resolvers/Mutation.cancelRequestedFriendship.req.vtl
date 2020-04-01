@@ -1,0 +1,21 @@
+#set($statement1 = "
+  DELETE FROM friendships
+  WHERE
+    status = 'requested'
+    AND id = '$context.arguments.id'
+    AND ""initiatorUserId"" = get_user_id_by_cognito_id('$context.identity.cognitoIdentityId')
+  RETURNING
+    ""id"",
+    ""initiatorUserId"",
+    ""otherUserId"",
+    ""initiatorUserLastSeen"",
+    ""otherUserLastSeen"",
+    ""status""
+")
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1)
+  ]
+}

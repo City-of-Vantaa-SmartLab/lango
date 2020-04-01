@@ -1,0 +1,12 @@
+#set($statement1 = "
+  SELECT *
+  FROM users
+  WHERE id = '$context.arguments.id'
+")
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1)
+  ]
+}

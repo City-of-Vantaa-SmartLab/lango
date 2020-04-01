@@ -1,0 +1,23 @@
+#set($statement1 = "
+  INSERT INTO cognito_id_to_user_id_map
+    (""cognitoId"")
+  VALUES
+    ('$context.arguments.cognitoId')
+  ON CONFLICT DO NOTHING
+")
+
+#set($statement2 = "
+  SELECT
+    ""cognitoId"",
+    ""userId""
+  FROM cognito_id_to_user_id_map
+  WHERE ""cognitoId"" = '$context.arguments.cognitoId'
+")
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1),
+    $utils.toJson($statement2)
+  ]
+}

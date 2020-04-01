@@ -1,0 +1,34 @@
+#set($statement1 = "
+  INSERT INTO messages
+    (
+      ""id"",
+      ""friendshipId"",
+      ""sentDate"",
+      ""receiverUserId"",
+      ""senderUserId"",
+      ""content""
+    )
+  VALUES
+    (
+      uuid_generate_v4(),
+      '$context.arguments.friendshipId',
+      '$utils.time.nowISO8601()',
+      '$context.arguments.receiverUserId',
+      '$context.arguments.senderUserId',
+      '$context.arguments.content'
+    )
+  RETURNING
+    ""id"",
+    ""receiverUserId"",
+    ""senderUserId"",
+    ""friendshipId"",
+    ""sentDate"",
+    ""content""
+")
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1)
+  ]
+}

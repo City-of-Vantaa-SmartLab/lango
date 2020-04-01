@@ -1,0 +1,14 @@
+#set($statement1 = "
+  -- The WHERE limits this query to admins
+  SELECT *
+  FROM users
+  WHERE get_user_id_by_cognito_id('$context.identity.cognitoIdentityId') IN (SELECT id FROM users WHERE ""isAdmin"" = true)
+  ORDER BY ""firstName"" ASC
+")
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1)
+  ]
+}

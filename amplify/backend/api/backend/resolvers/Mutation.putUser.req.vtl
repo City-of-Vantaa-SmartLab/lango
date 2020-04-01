@@ -1,0 +1,40 @@
+#set($statement1 = "
+  INSERT INTO users
+    (
+      ""id"",
+      ""email"",
+      ""firstName"",
+      ""description"",
+      ""gender"",
+      ""location"",
+      ""isHidden"",
+      ""isAdmin""
+    )
+  VALUES
+    (
+      '$context.arguments.id',
+      '$context.arguments.email',
+      '$context.arguments.firstName',
+      '$context.arguments.description',
+      '$context.arguments.gender',
+      '$context.arguments.location',
+      '$context.arguments.isHidden',
+      false
+    )
+  ON CONFLICT (""id"") DO
+    UPDATE SET
+      ""id"" = excluded.""id"",
+      ""email"" = excluded.""email"",
+      ""firstName"" = excluded.""firstName"",
+      ""description"" = excluded.""description"",
+      ""gender"" = excluded.""gender"",
+      ""location"" = excluded.""location"",
+      ""isHidden"" = excluded.""isHidden""
+")
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1)
+  ]
+}

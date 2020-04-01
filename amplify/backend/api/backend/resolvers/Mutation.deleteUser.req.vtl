@@ -1,0 +1,23 @@
+#set($statement1 = "
+  -- This cascades
+  DELETE FROM cognito_id_to_user_id_map
+  WHERE
+    ""userId"" = '$context.arguments.id'
+    AND (
+      ""userId"" = get_user_id_by_cognito_id('$context.identity.cognitoIdentityId')
+      OR EXISTS (
+        SELECT 1
+        FROM users
+        WHERE
+          ""isAdmin"" = true
+          AND id = get_user_id_by_cognito_id('$context.identity.cognitoIdentityId')
+      )
+    )
+")
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1),
+  ]
+}

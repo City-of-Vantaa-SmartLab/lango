@@ -1,0 +1,12 @@
+#set($statement1 = "
+  SELECT *
+  FROM languages
+  WHERE code = '$context.source.languageCode'
+")
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1)
+  ]
+}

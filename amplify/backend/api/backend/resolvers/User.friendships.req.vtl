@@ -1,0 +1,20 @@
+#set($statement1 = "
+  SELECT
+    ""id"",
+    ""initiatorUserId"",
+    ""otherUserId"",
+    ""initiatorUserLastSeen"",
+    ""otherUserLastSeen"",
+    status
+  FROM friendships
+  WHERE
+    ""initiatorUserId"" = '$context.source.id'
+    OR ""otherUserId"" = '$context.source.id'
+")
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1)
+  ]
+}

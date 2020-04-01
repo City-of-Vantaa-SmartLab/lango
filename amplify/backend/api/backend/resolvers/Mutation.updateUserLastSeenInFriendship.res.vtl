@@ -1,0 +1,7 @@
+#set($results = $utils.rds.toJsonObject($context.result))
+#if($results[0].isEmpty())
+  $utils.toJson($results[1][0])
+#else
+  $utils.toJson($results[0][0])
+#end
+

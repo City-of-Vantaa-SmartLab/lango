@@ -1,0 +1,11 @@
+#set($results = $utils.rds.toJsonObject($context.result))
+#if($results[0].isEmpty())
+  $utils.toJson(null)
+#else
+  $utils.qr($context.stash.put("friendshipId", $results[0][0].friendshipId))
+  $utils.qr($context.stash.put("receiverUserId", $results[0][0].receiverUserId))
+  $utils.qr($context.stash.put("senderUserId", $results[0][0].senderUserId))
+  $utils.qr($context.stash.put("message", $results[0][0].content))
+
+  $utils.toJson($results[0][0])
+#end

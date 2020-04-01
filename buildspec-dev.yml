@@ -1,0 +1,45 @@
+version: 0.2
+
+env:
+  variables:
+    Version: aws/codebuild/nodejs:10.1.0
+    CHROME_BIN: "/usr/bin/chromium-browser"
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 10
+
+    commands:
+      - apt update -y
+      - apt install -y apt-transport-https
+      # Setup for Yarn
+      - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+      - echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+      # Setup for Chrome
+      - apt install -y software-properties-common
+      - add-apt-repository -y ppa:canonical-chromium-builds/stage
+      # Do it!
+      - apt update -y
+      - apt install -y chromium-browser
+      - apt install -y yarn
+
+  pre_build:
+    commands:
+      - yarn install
+
+  build:
+    commands:
+      - yarn run lint
+      - yarn run test
+      - yarn run build:dev
+
+  post_build:
+    commands:
+      - aws s3 sync ./build s3://lango-dev/ --cache-control 'no-cache'
+      - aws cloudfront create-invalidation --distribution-id E1PHHCS6989CAA --paths "/*"
+
+cache:
+  yarn: true
+  directories:
+    - node_modules

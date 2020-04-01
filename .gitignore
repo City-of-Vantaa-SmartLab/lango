@@ -1,0 +1,28 @@
+# Don't check auto-generated stuff into git
+coverage
+build
+node_modules
+yarn-error.log
+
+# Environment
+.env
+
+# Cruft
+.DS_Store
+npm-debug.log
+.idea
+
+# amplify
+amplify/\#current-cloud-backend
+amplify/.config/local-*
+amplify/mock-data
+amplify/backend/amplify-meta.json
+amplify/backend/awscloudformation
+build/
+dist/
+node_modules/
+aws-exports.js
+awsconfiguration.json
+
+# Database tools
+/database-tools/.env

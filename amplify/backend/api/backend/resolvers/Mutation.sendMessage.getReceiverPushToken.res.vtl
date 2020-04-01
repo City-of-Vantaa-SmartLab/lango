@@ -1,0 +1,8 @@
+#set($results = $utils.rds.toJsonObject($context.result))
+#if($results[0].isEmpty())
+  $utils.toJson(null)
+#else
+  $utils.qr($context.stash.put("receiverPushToken", $results[0][0].pushToken))
+
+  $utils.toJson($context.prev.result)
+#end
