@@ -1,0 +1,15 @@
+#set($statement1 = "
+  SELECT
+    COALESCE(ARRAY_AGG(value), array[]::varchar[]) AS ""genderPreferences""
+  FROM user_preferences
+  WHERE
+    ""userId"" = '$context.source.id'
+    AND ""type"" = 'gender'
+")
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1)
+  ]
+}

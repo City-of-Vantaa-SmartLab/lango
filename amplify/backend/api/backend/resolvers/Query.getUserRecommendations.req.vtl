@@ -1,0 +1,146 @@
+#set($statement1 = "
+  WITH
+    me AS (
+      SELECT id, location, gender
+      FROM users
+      WHERE id = get_user_id_by_cognito_id('$context.identity.cognitoIdentityId')
+    ),
+    my_learning_languages AS (
+      SELECT ""languageCode""
+      FROM user_languages
+      WHERE
+        ""userId"" = (SELECT id FROM me)
+        AND ""type"" = 'learning'
+    ),
+    my_spoken_languages AS (
+      SELECT ""languageCode""
+      FROM user_languages
+      WHERE
+        ""userId"" = (SELECT id FROM me)
+        AND ""type"" = 'spoken'
+    ),
+    my_gender_preferences AS (
+      SELECT unnest(preferences_array) AS value
+      FROM (
+        SELECT
+          (
+            CASE
+            WHEN
+              EXISTS
+                (
+                  SELECT 1
+                  FROM user_preferences
+                  WHERE ""userId"" = (SELECT id FROM me) AND ""type"" = 'gender'
+                )
+            THEN
+              (
+                SELECT ARRAY_AGG(value)
+                FROM user_preferences
+                WHERE ""userId"" = (SELECT id FROM me) AND ""type"" = 'gender'
+              )
+            ELSE ARRAY['male','female','other']
+            END
+          ) AS preferences_array
+      ) x
+    ),
+    my_friend_ids AS (
+      SELECT
+        (
+          CASE
+          WHEN ""initiatorUserId"" = (SELECT id FROM me)
+          THEN ""otherUserId""
+          ELSE ""initiatorUserId""
+          END
+        ) AS id
+      FROM friendships
+      WHERE ""initiatorUserId"" = (SELECT id FROM me) OR ""otherUserId"" = (SELECT id FROM me)
+    ),
+    others AS (
+      SELECT
+        users.*,
+        ARRAY_AGG(user_spoken_languages.""languageCode"") AS spoken,
+        ARRAY_AGG(user_learning_languages.""languageCode"") AS learning
+      FROM users
+      INNER JOIN user_languages user_spoken_languages
+        ON
+          user_spoken_languages.""userId"" = users.id
+          AND user_spoken_languages.type = 'spoken'
+      LEFT JOIN user_languages user_learning_languages
+        ON
+          user_learning_languages.""userId"" = users.id
+          AND user_learning_languages.type = 'learning'
+      WHERE
+        (gender::varchar = ANY (SELECT value FROM my_gender_preferences))
+        AND (
+          NOT EXISTS (SELECT value FROM user_preferences WHERE ""userId"" = users.id)
+          OR (SELECT gender::varchar FROM me) = ANY (SELECT value FROM user_preferences WHERE ""userId"" = users.id)
+        )
+        AND id NOT IN (SELECT id FROM my_friend_ids)
+        AND users.""isHidden"" = FALSE
+        AND id != (SELECT id FROM me)
+      GROUP BY users.id
+    )
+
+  SELECT *
+  FROM (
+    (
+      SELECT 1 AS priority, *
+      FROM others
+      WHERE
+        location = (SELECT location FROM me)
+        AND (
+          spoken && (SELECT ARRAY_AGG(""languageCode"") FROM my_learning_languages)
+          AND learning && (SELECT ARRAY_AGG(""languageCode"") FROM my_spoken_languages)
+        )
+      LIMIT 100
+    )
+    UNION
+    (
+      SELECT 2 AS priority, *
+      FROM others
+      WHERE
+        location = (SELECT location FROM me)
+        AND (
+          spoken && (SELECT ARRAY_AGG(""languageCode"") FROM my_learning_languages)
+          OR learning && (SELECT ARRAY_AGG(""languageCode"") FROM my_spoken_languages)
+        )
+        AND NOT ( -- To prevent duplicates with priority 1
+          spoken && (SELECT ARRAY_AGG(""languageCode"") FROM my_learning_languages)
+          AND learning && (SELECT ARRAY_AGG(""languageCode"") FROM my_spoken_languages)
+        )
+      LIMIT 100
+    )
+    UNION
+    (
+      SELECT 3 AS priority, *
+      FROM others
+      WHERE
+        location = (SELECT location FROM me)
+        AND NOT ( -- To prevent duplicates with priority 1 and 2
+          spoken && (SELECT ARRAY_AGG(""languageCode"") FROM my_learning_languages)
+          OR learning && (SELECT ARRAY_AGG(""languageCode"") FROM my_spoken_languages)
+        )
+      LIMIT 100
+    )
+    UNION
+    (
+      SELECT 4 AS priority, *
+      FROM others
+      WHERE
+        location != (SELECT location FROM me)
+        AND (
+          spoken && (SELECT ARRAY_AGG(""languageCode"") FROM my_learning_languages)
+          OR learning && (SELECT ARRAY_AGG(""languageCode"") FROM my_spoken_languages)
+        )
+      LIMIT 100
+    )
+  ) x
+  ORDER BY priority ASC, ""lastLoginAt"" DESC
+")
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1)
+  ]
+}

@@ -1,0 +1,11 @@
+#set($statement1 = "
+  -- This is just a trick to make AppSync match things up
+  SELECT '$context.source.id'::uuid AS id
+")
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1)
+  ]
+}

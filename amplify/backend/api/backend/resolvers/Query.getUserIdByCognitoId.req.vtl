@@ -1,0 +1,19 @@
+#set($statement1 = "
+  SELECT ""userId""
+  FROM cognito_id_to_user_id_map
+  WHERE ""cognitoId"" = '$context.arguments.cognitoId'
+")
+
+#set($statement2 = "
+  UPDATE users
+  SET ""lastLoginAt"" = current_timestamp(3)
+  WHERE id = get_user_id_by_cognito_id('$context.identity.cognitoIdentityId');
+")
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1),
+    $utils.toJson($statement2)
+  ]
+}

@@ -1,0 +1,22 @@
+#if($context.arguments.pushToken)
+  #set($statement1 = "
+    UPDATE users
+    SET ""pushToken"" = '$context.arguments.pushToken'
+    WHERE id = get_user_id_by_cognito_id('$context.identity.cognitoIdentityId')
+    RETURNING ""pushToken""
+  ")
+#else
+  #set($statement1 = "
+    UPDATE users
+    SET ""pushToken"" = null
+    WHERE id = get_user_id_by_cognito_id('$context.identity.cognitoIdentityId')
+    RETURNING ""pushToken""
+  ")
+#end
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1)
+  ]
+}

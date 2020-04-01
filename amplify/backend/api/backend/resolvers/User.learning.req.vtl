@@ -1,0 +1,15 @@
+#set($statement1 = "
+  SELECT
+    COALESCE(ARRAY_AGG(""languageCode""), ARRAY[]::varchar[]) AS languages
+  FROM user_languages
+  WHERE
+    ""userId"" = '$context.source.id'
+    AND ""type"" = 'learning'
+")
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1)
+  ]
+}

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- The first thing in any HTML file should be the charset -->
+  <meta charset="utf-8">
+
+  <!-- Make the page mobile compatible -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Allow installing the app to the homescreen -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- iOS home screen icons -->
+  <meta name="apple-mobile-web-app-title" content="Lango App">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="/icon-167x167.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/icon-180x180.png">
+  <link rel="icon" href="/favicon.ico" />
+  <title>Lango</title>
+</head>
+
+<body>
+
+  <script>
+    window.__VERSION__ = '<%= VERSION %>';
+  </script>
+
+  <script>
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: '<%= process.env.FACEBOOK_APP_ID %>',
+        autoLogAppEvents: true,
+        xfbml: false,
+        version: 'v5.0'
+      });
+    };
+
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {
+        return;
+      }
+      js = d.createElement(s);
+      js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+  </script>
+
+  <!-- Firebase for push notifications -->
+  <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-messaging.js"></script>
+
+  <script>
+    firebase.initializeApp({
+      apiKey: 'AIzaSyBOv2DwXdaQAXRiYbKmGol6w2LkN1dgG-c',
+      authDomain: 'lango-push-notifications.firebaseapp.com',
+      databaseURL: 'https://lango-push-notifications.firebaseio.com',
+      projectId: 'lango-push-notifications',
+      storageBucket: 'lango-push-notifications.appspot.com',
+      messagingSenderId: '993421901405',
+      appId: '1:993421901405:web:13a227cd708a2c415997b4',
+    });
+  </script>
+
+  <div id="fb-root"></div>
+  <!-- Display a message if JS has been disabled on the browser. -->
+  <noscript>If you're seeing this message, that means <strong>JavaScript has been disabled on your browser</strong>,
+    please <strong>enable JS</strong> to make this app work.
+  </noscript>
+  <!-- The app hooks into this div -->
+  <div id="app"></div>
+
+  <script src="/main.js"></script>
+</body>
+
+</html>

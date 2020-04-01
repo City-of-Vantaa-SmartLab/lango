@@ -1,0 +1,15 @@
+drop table if exists messages;
+drop trigger if exists assert_friendship_user_id_combination_is_unique_check on friendships;
+drop function if exists assert_friendship_user_id_combination_is_unique;
+drop table if exists friendships;
+drop type friendship_status;
+drop table if exists user_preferences;
+drop type if exists user_preference_type;
+drop table if exists user_languages;
+drop type if exists language_type;
+drop table if exists users;
+drop function if exists get_user_id_by_cognito_id;
+drop table if exists cognito_id_to_user_id_map;
+drop type if exists gender;
+drop table if exists languages;
+drop extension if exists "uuid-ossp";

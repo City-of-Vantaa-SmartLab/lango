@@ -1,0 +1,12 @@
+#set($statement1 = "
+  SELECT ""firstName""
+  FROM users
+  WHERE id = '$context.stash.senderUserId'
+")
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1)
+  ]
+}

@@ -1,0 +1,23 @@
+#set($statement1 = "
+  SELECT *
+  FROM (
+    SELECT
+      ""id"",
+      ""senderUserId"",
+      ""receiverUserId"",
+      ""sentDate"",
+      ""content""
+    FROM messages
+    WHERE ""friendshipId"" = '$context.source.id'
+    ORDER BY ""sentDate"" DESC
+    LIMIT 500
+  ) latest_messages
+  ORDER BY ""sentDate"" ASC
+")
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1)
+  ]
+}

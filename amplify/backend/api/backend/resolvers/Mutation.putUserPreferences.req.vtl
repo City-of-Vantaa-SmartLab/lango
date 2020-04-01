@@ -1,0 +1,25 @@
+#set($statement1 = "
+  DELETE FROM user_preferences
+  WHERE ""userId"" = get_user_id_by_cognito_id('$context.identity.cognitoIdentityId')
+")
+
+#set($statement2 = "
+  INSERT INTO user_preferences
+    (""userId"", ""type"", ""value"")
+  SELECT
+    get_user_id_by_cognito_id('$context.identity.cognitoIdentityId') AS ""userId"",
+    'gender' AS ""type"",
+    value
+  FROM
+    json_array_elements_text(
+      '$utils.toJson($context.arguments.gender)'
+    )
+")
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1),
+    $utils.toJson($statement2)
+  ]
+}

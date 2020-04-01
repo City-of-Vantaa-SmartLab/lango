@@ -1,0 +1,36 @@
+#set($statement1 = "
+  DELETE FROM user_languages
+  WHERE ""userId"" = get_user_id_by_cognito_id('$context.identity.cognitoIdentityId')
+")
+
+#set($statement2 = "
+  INSERT INTO user_languages
+    (""userId"", ""type"", ""languageCode"")
+  SELECT
+    get_user_id_by_cognito_id('$context.identity.cognitoIdentityId') AS ""userId"",
+    'learning'::language_type AS ""type"",
+    value AS ""languageCode""
+  FROM
+    json_array_elements_text(
+      '$utils.toJson($context.arguments.learning)'
+    )
+
+  UNION ALL
+
+  SELECT
+    get_user_id_by_cognito_id('$context.identity.cognitoIdentityId') AS ""userId"",
+    'spoken'::language_type AS ""type"",
+    value AS ""languageCode""
+  FROM
+    json_array_elements_text(
+      '$utils.toJson($context.arguments.spoken)'
+    )
+")
+
+{
+  "version": "2018-05-29",
+  "statements": [
+    $utils.toJson($statement1),
+    $utils.toJson($statement2)
+  ]
+}
