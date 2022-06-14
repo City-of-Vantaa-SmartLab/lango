@@ -1,7 +1,7 @@
 Lango
 ===
 
-Lango runs at [www.lango.fi](https://www.lango.fi/).
+Lango service is now finished. It ran at [www.lango.fi](https://www.lango.fi/). It was a service to find friends to practice languages with.
 
 Development
 ---
